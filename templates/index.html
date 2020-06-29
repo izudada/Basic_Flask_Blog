@@ -1,11 +1,24 @@
 {% extends "layout.html" %}
 
 {% block body %} 
-    <h1 id="logo"> LOGO </h1>
-    <form id="myform" class="lead" method="POST">
-        <div class="animated slideInRight">
-            
+    <h1> Register </h1>
+    {%  from "includes/_formhelpers.html" import render_field %}
+    <form method="POST" action="">
+        <div class="form-group">
+           <span> {{ render_field(form.name, class="form-control") }} </span>
         </div>
+        <div class="form-group">
+            {{ render_field(form.email, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ render_field(form.username, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ render_field(form.password, class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ render_field(form.confirm, class="form-control") }}
+        </div>
+        <po> <input type="submit" class="btn btn-primary" value="Submit"> </po>
     </form>
-
 {% endblock %}	
