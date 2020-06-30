@@ -1,25 +1,22 @@
 {% extends "layout.html" %}
 
 {% block body %} 
-	<div class="jumbotron">
-
-		<h1 id="logo"> LOGO </h1>
-		<form id="myform" class="lead" method="POST">
-			<div class="animated slideInRight">
-				<div>
-					<input class="inp" type="text" name="email" placeholder="Email" required>
-				</div> 
-				<br>
-				<div> 
-					<input class="inp" type="password" name="password" placeholder="Password" required>
-				</div> 
-				<br>
-				<button class="but" type="submit" name="submit"> Log in </button> 
-				<br>
-				<br>
-				<p id="recover"> <a class="create" href="#"> Forgotten Password? </a></p>
-				<br>
-			</div>
-		</form>
-	</div> 
+	<h1 id="logo"> LOGO </h1>
+	<form id="myform" class="lead" method="POST">
+		<div class="animated slideInRight">
+			<div>
+				<input class="inp" type="text" name="email" placeholder="Email" required>
+			</div> 
+			<br>
+			<div> 
+				<input class="inp" type="password" name="password" placeholder="Password" required>
+			</div> 
+			<br>
+			<button class="but" type="submit" name="submit"> Log in </button> 
+			<br>
+			<br>
+			<p id="recover"> <a class="create" href="#"> Forgotten Password? </a></p>
+			<br>
+		</div>
+	</form>
 {% endblock %}	
