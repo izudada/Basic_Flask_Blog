@@ -57,8 +57,33 @@ def index():
         return render_template("index.html", form = form)
 
 
+
 @app.route("/login", methods = ['GET', 'POST'])
 def login():
+        if request.method == 'POST':
+
+                # Get Form Fields
+                email = request.form['email']
+                password_candidate = request.form['password']
+
+                # Create Cursor
+                cur = mysql.connection.cursor()
+
+                # Get user by email
+                result = cur.execute("SELECT * FROM users WHERE email = %s", [email])
+
+                if result > 0:
+                        #Get stored hash
+                        data = cur.fetchone()
+                        password = data['password']
+
+                        # Compare passwords
+                        if sha256_crypt.verify(password_candidate, password):
+                                app.logger.info('PASSWOD MATCHED')
+                        else:
+                                app.logger.info('PASSWORD NOT MATCHED')
+                else:
+                        app.logger.info('NO USER')
         return render_template("login.html")
 
 
