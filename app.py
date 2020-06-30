@@ -81,9 +81,12 @@ def login():
                         if sha256_crypt.verify(password_candidate, password):
                                 app.logger.info('PASSWOD MATCHED')
                         else:
-                                app.logger.info('PASSWORD NOT MATCHED')
+                                error = 'Invalid login'
+                                return render_template("login.html", error = error)
                 else:
-                        app.logger.info('NO USER')
+                        error = 'Username not Found'
+                        return render_template("login.html", error = error)
+
         return render_template("login.html")
 
 
