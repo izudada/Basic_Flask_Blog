@@ -1,5 +1,4 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
-from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
@@ -16,8 +15,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 
-Articles = Articles()
-
+# Registration FOrm Class
 class RegisterForm(Form):
         name = StringField('Name', [validators.length(min=5, max=50)])
         username = StringField('Username', [validators.length(min=4, max=25)])
@@ -28,7 +26,7 @@ class RegisterForm(Form):
         ])
         confirm = PasswordField('Confirm Password')
 
-
+# Index/Home Page
 @app.route("/", methods = ['GET', 'POST'])
 def index():
         form = RegisterForm(request.form)
@@ -57,9 +55,10 @@ def index():
         return render_template("index.html", form = form)
 
 
-
+# Login
 @app.route("/login", methods = ['GET', 'POST'])
 def login():
+        
         if request.method == 'POST':
 
                 # Get Form Fields
@@ -79,16 +78,35 @@ def login():
 
                         # Compare passwords
                         if sha256_crypt.verify(password_candidate, password):
-                                app.logger.info('PASSWOD MATCHED')
+                                # Passed
+                                session['logged_in'] = True
+                                session['email'] = email
+
+                                flash('You are now logged in', 'success')
+                                return redirect(url_for('dashboard'))
                         else:
                                 error = 'Invalid login'
                                 return render_template("login.html", error = error)
+                        # Close Connection
+                        cur.close()
                 else:
                         error = 'Username not Found'
                         return render_template("login.html", error = error)
 
         return render_template("login.html")
 
+
+# Logout
+@app.route("/logout")
+def logout():
+        session.clear()
+        flash('You have succesfully logged', 'success')
+        return redirect(url_for('login'))
+
+# Dashboard
+@app.route("/dashboard")
+def dashboard():
+        return render_template("dashboard.html")
 
 if __name__ == '__main__':
         app.secret_key = 'secret123'
