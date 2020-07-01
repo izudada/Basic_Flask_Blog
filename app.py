@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -64,6 +65,7 @@ def login():
                 # Get Form Fields
                 email = request.form['email']
                 password_candidate = request.form['password']
+                username = ''
 
                 # Create Cursor
                 cur = mysql.connection.cursor()
@@ -75,12 +77,14 @@ def login():
                         #Get stored hash
                         data = cur.fetchone()
                         password = data['password']
+                        username = data['username']
 
                         # Compare passwords
                         if sha256_crypt.verify(password_candidate, password):
                                 # Passed
                                 session['logged_in'] = True
                                 session['email'] = email
+                                session['username'] = username
 
                                 flash('You are now logged in', 'success')
                                 return redirect(url_for('dashboard'))
@@ -96,6 +100,18 @@ def login():
         return render_template("login.html")
 
 
+# Check If User is Logged In
+def is_logged_in(f):
+        @wraps(f)
+        def wrap(*args, **kwargs):
+                if 'logged_in' in session:
+                        return f(*args, **kwargs)
+                else:
+                        flash('Unauthorized, Please login', 'danger')
+                        return redirect(url_for('login'))
+        return wrap
+
+
 # Logout
 @app.route("/logout")
 def logout():
@@ -103,8 +119,10 @@ def logout():
         flash('You have succesfully logged out', 'success')
         return redirect(url_for('login'))
 
+
 # Dashboard
 @app.route("/dashboard")
+@is_logged_in
 def dashboard():
         return render_template("dashboard.html")
 
