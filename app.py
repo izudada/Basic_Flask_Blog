@@ -100,7 +100,7 @@ def login():
 @app.route("/logout")
 def logout():
         session.clear()
-        flash('You have succesfully logged', 'success')
+        flash('You have succesfully logged out', 'success')
         return redirect(url_for('login'))
 
 # Dashboard
